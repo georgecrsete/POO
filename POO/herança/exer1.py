@@ -1,28 +1,20 @@
-class Computador():
-    def __init__(self, processador, memoria):
-        self.processador = processador
-        self.memoria = memoria
-
+class Computador:
+    def __init__(self,processador,memoria):
+        self.processador:str = processador
+        self.memoria:int = memoria
+    def __str__(self):
+        return f"O Processador dessa máquina é o {self.processador} com memória de {self.memoria} RAM"
+    
 class Laptop(Computador):
-    def __init__(self, processador, memoria, bateriawatts = 0):
+    def __init__(self, processador, memoria):
         super().__init__(processador, memoria)
-        self.bateriawatts = bateria_watts
-
-
+        self.bateria_watts = 0
 class Desktop(Computador):
-    def __init__(self, processador, memoria, gabinete = ''):    
-        super().__init__(processador, memoria)
-        self.gabinete = gabinete
+    def __init__(self,processador,memoria):
+        super().__init__(processador,memoria)
+        self.cabinete:str = ""
+laptop = Laptop("Intel i5", 16)
+print(laptop)
 
-
-notebook2 = Laptop("AMD Ryzen 7", 16, 65)
-print(notebook2.bateria_watts)
-
-
-pc = Desktop("Intel i9", 32)
-print(pc.processador)
-print(pc.gabinete) 
-
-
-pc2 = Desktop("Intel i9", 32, "ATX Tower")
-print(pc2.gabinete)
+desktop = Desktop("SSD 5i", 32)
+print(desktop)
