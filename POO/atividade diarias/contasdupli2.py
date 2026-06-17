@@ -21,13 +21,13 @@ class ContaBancaria:
         return self.__titular
 
     def depositar(self, valor):
-        if valor > 0:
+        if valor >= 0:
             self.__saldo += valor  
             return True
         return False
 
     def sacar(self, valor):
-        if self.__saldo >= valor and valor > 0:  
+        if self.__saldo >= valor and valor >= 0:  
             self.__saldo -= valor
             return True
         return False
@@ -49,9 +49,16 @@ class ContaBancaria:
             else:
                 vistas.append(numero)
         return duplicadas  
-    def sacar(self, ):
+    
+    def depositar(self, valor):
+        self.__saldo += valor
+        return self.__saldo
+    
 
-
+    def sacar(self, valor):
+        self.__saldo -= valor
+        return self.__saldo
+       
 class BancoApp:
     def __init__(self, janela):
         self.janela = janela
@@ -60,8 +67,8 @@ class BancoApp:
 
         self.contas = [
             ContaBancaria("João", 1001, 500),
-            ContaBancaria("Maria", 1001, 1000),
-            ContaBancaria("Pedro", 1001, 300),
+            ContaBancaria("Maria", 1002, 1000),
+            ContaBancaria("Pedro", 1003, 300),
             ContaBancaria("Esther", 1004, 20)
         ]
     
@@ -127,7 +134,7 @@ class BancoApp:
                 width=15,
                 command=lambda c=conta: self.depositar(c)
             )
-            btn_depositar.config(state="disabled")
+            #btn_depositar.config(state="disabled")
             btn_depositar.pack(pady=2)
 
             btn_sacar = tk.Button(
@@ -136,7 +143,7 @@ class BancoApp:
                 width=15,
                 command=lambda c=conta: self.sacar(c)
             )
-            btn_sacar.config(state="disabled")
+            #btn_sacar.config(state="disabled")
             btn_sacar.pack(pady=2)
 
             btn_transferir = tk.Button(
