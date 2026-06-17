@@ -22,12 +22,12 @@ class ContaBancaria:
 
     def depositar(self, valor):
         if valor > 0:
-            self.__saldo += valor  # era self.saldo (sem __)
+            self.__saldo += valor  
             return True
         return False
 
     def sacar(self, valor):
-        if self.__saldo >= valor and valor > 0:  # era > sem =
+        if self.__saldo >= valor and valor > 0:  
             self.__saldo -= valor
             return True
         return False
@@ -49,6 +49,7 @@ class ContaBancaria:
             else:
                 vistas.append(numero)
         return duplicadas  
+    def sacar(self, ):
 
 
 class BancoApp:
@@ -60,7 +61,7 @@ class BancoApp:
         self.contas = [
             ContaBancaria("João", 1001, 500),
             ContaBancaria("Maria", 1001, 1000),
-            ContaBancaria("Pedro", 1003, 300),
+            ContaBancaria("Pedro", 1001, 300),
             ContaBancaria("Esther", 1004, 20)
         ]
     
@@ -83,6 +84,8 @@ class BancoApp:
         self.frame_contas.pack()
 
         self.atualizar_tela()
+
+    
 
     def atualizar_tela(self):
         for widget in self.frame_contas.winfo_children():
@@ -151,7 +154,7 @@ class BancoApp:
                 width=15,
                 command=lambda c=conta: self.exibir_dados(c)
             )
-            btn_dados.config(state="disabled")
+           # btn_dados.config(state="disabled")
             btn_dados.pack(pady=2)
 
     def depositar(self, conta):
