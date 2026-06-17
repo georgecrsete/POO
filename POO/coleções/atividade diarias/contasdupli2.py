@@ -1,3 +1,4 @@
+
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 
@@ -62,7 +63,7 @@ class BancoApp:
             ContaBancaria("Pedro", 1003, 300),
             ContaBancaria("Esther", 1004, 20)
         ]
-
+    
         if ContaBancaria.existe_conta_duplicada():
             messagebox.showerror("Erro", "Existe conta duplicada")
             messagebox.showinfo("Contas duplicadas", str(ContaBancaria.contas_duplicadas()))
@@ -78,18 +79,18 @@ class BancoApp:
         )
         titulo.pack(pady=15)
 
-        self.frame_numeros = tk.Frame(self.janela)
-        self.frame_numeros.pack()
+        self.frame_contas = tk.Frame(self.janela)
+        self.frame_contas.pack()
 
         self.atualizar_tela()
 
     def atualizar_tela(self):
-        for widget in self.frame_numeros.winfo_children():
+        for widget in self.frame_contas.winfo_children():
             widget.destroy()
 
-        for conta in self.contas:  # era self.numeros (atributo inexistente)
+        for conta in self.contas:
             frame = tk.Frame(
-                self.frame_numeros,
+                self.frame_contas,
                 borderwidth=2,
                 relief="groove",
                 padx=10,
@@ -97,42 +98,98 @@ class BancoApp:
             )
             frame.pack(side="left", padx=10, pady=10)
 
-            tk.Label(frame, text=conta.get_titular(), font=("Arial", 14, "bold")).pack()
-            tk.Label(frame, text=f"Número: {conta.get_numero()}").pack()
-            tk.Label(frame, text=f"Saldo: R$ {conta.get_saldo():.2f}", font=("Arial", 12)).pack(pady=5)
+            lbl_titular = tk.Label(
+                frame,
+                text=conta.get_titular(),
+                font=("Arial", 14, "bold")
+            )
+            lbl_titular.pack()
 
-            tk.Button(frame, text="Depositar", width=15, command=lambda c=conta: self.depositar(c)).pack(pady=2)
-            tk.Button(frame, text="Sacar", width=15, command=lambda c=conta: self.sacar(c)).pack(pady=2)
-            tk.Button(frame, text="Transferir", width=15, command=lambda c=conta: self.transferir(c)).pack(pady=2)
-            tk.Button(frame, text="Exibir Dados", width=15, command=lambda c=conta: self.exibir_dados(c)).pack(pady=2)
+            lbl_numero = tk.Label(
+                frame,
+                text=f"Conta: {conta.get_numero()}"
+            )
+            lbl_numero.pack()
+
+            lbl_saldo = tk.Label(
+                frame,
+                text=f"Saldo: R$ {conta.get_saldo():.2f}",
+                font=("Arial", 12)
+            )
+            lbl_saldo.pack(pady=5)
+
+            btn_depositar = tk.Button(
+                frame,
+                text="Depositar",
+                width=15,
+                command=lambda c=conta: self.depositar(c)
+            )
+            btn_depositar.config(state="disabled")
+            btn_depositar.pack(pady=2)
+
+            btn_sacar = tk.Button(
+                frame,
+                text="Sacar",
+                width=15,
+                command=lambda c=conta: self.sacar(c)
+            )
+            btn_sacar.config(state="disabled")
+            btn_sacar.pack(pady=2)
+
+            btn_transferir = tk.Button(
+                frame,
+                text="Transferir",
+                width=15,
+                command=lambda c=conta: self.transferir(c)
+            )
+            btn_transferir.config(state="disabled")
+            btn_transferir.pack(pady=2)
+
+            btn_dados = tk.Button(
+                frame,
+                text="Exibir Dados",
+                width=15,
+                command=lambda c=conta: self.exibir_dados(c)
+            )
+            btn_dados.config(state="disabled")
+            btn_dados.pack(pady=2)
 
     def depositar(self, conta):
         valor = simpledialog.askfloat("Depósito", "Digite o valor do depósito:")
+
         if valor is not None:
             if conta.depositar(valor):
                 messagebox.showinfo("Sucesso", "Depósito realizado.")
             else:
                 messagebox.showerror("Erro", "Valor inválido.")
+
         self.atualizar_tela()
 
     def sacar(self, conta):
         valor = simpledialog.askfloat("Saque", "Digite o valor do saque:")
+
         if valor is not None:
             if conta.sacar(valor):
                 messagebox.showinfo("Sucesso", "Saque realizado.")
             else:
                 messagebox.showerror("Erro", "Saldo insuficiente ou valor inválido.")
+
         self.atualizar_tela()
 
     def transferir(self, conta_origem):
         valor = simpledialog.askfloat("Transferência", "Digite o valor:")
+
         if valor is None:
             return
 
-        numero_destino = simpledialog.askinteger("Transferência", "Digite o número da conta destino:")
+        numero_destino = simpledialog.askinteger(
+            "Transferência",
+            "Digite o número da conta destino:"
+        )
 
         conta_destino = None
-        for conta in self.contas:  # era self.numeros
+
+        for conta in self.contas:
             if conta.get_numero() == numero_destino:
                 conta_destino = conta
                 break
@@ -145,8 +202,7 @@ class BancoApp:
             messagebox.showerror("Erro", "Não é possível transferir para a mesma conta.")
             return
 
-        if conta_origem.sacar(valor):  # transferir não existe, usa sacar + depositar
-            conta_destino.depositar(valor)
+        if conta_origem.transferir(valor, conta_destino):
             messagebox.showinfo("Sucesso", "Transferência realizada.")
         else:
             messagebox.showerror("Erro", "Saldo insuficiente ou valor inválido.")
@@ -154,7 +210,7 @@ class BancoApp:
         self.atualizar_tela()
 
     def exibir_dados(self, conta):
-        messagebox.showinfo("Dados da Conta", conta.exibir_dados())  # exibir_dados agora retorna string
+        messagebox.showinfo("Dados da Conta", conta.exibir_dados())
 
 
 janela = tk.Tk()
