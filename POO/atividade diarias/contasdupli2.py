@@ -32,8 +32,14 @@ class ContaBancaria:
             return True
         return False
 
+    def transferir(self, valor, destino):
+        if self.sacar(valor):
+            destino.depositar(valor)
+            return True
+        return False
+
     def exibir_dados(self):
-        return f"{self.__titular}, Número da conta: {self.__numero}, Saldo: R$ {self.__saldo:.2f}"  # era print, mas precisa retornar
+        return f"{self.__titular}, Número da conta: {self.__numero}, Saldo: R$ {self.__saldo:.2f}"
 
     @classmethod
     def existe_conta_duplicada(cls):
@@ -49,15 +55,7 @@ class ContaBancaria:
             else:
                 vistas.append(numero)
         return duplicadas  
-    
-    def depositar(self, valor):
-        self.__saldo += valor
-        return self.__saldo
-    
 
-    def sacar(self, valor):
-        self.__saldo -= valor
-        return self.__saldo
        
 class BancoApp:
     def __init__(self, janela):
@@ -93,7 +91,6 @@ class BancoApp:
         self.atualizar_tela()
 
     
-
     def atualizar_tela(self):
         for widget in self.frame_contas.winfo_children():
             widget.destroy()
@@ -152,7 +149,7 @@ class BancoApp:
                 width=15,
                 command=lambda c=conta: self.transferir(c)
             )
-            btn_transferir.config(state="disabled")
+           # btn_transferir.config(state="disabled")
             btn_transferir.pack(pady=2)
 
             btn_dados = tk.Button(
