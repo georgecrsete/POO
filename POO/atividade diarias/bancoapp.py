@@ -24,19 +24,22 @@ class ContaBancaria:
         if valor >= 0:
             self.__saldo += valor  
             return True
-        return False
+        else:
+            return False
 
     def sacar(self, valor):
         if self.__saldo >= valor and valor >= 0:  
             self.__saldo -= valor
             return True
-        return False
+        else:
+            return False
 
     def transferir(self, valor, destino):
         if self.sacar(valor):
             destino.depositar(valor)
             return True
-        return False
+        else:
+            return False
 
     def exibir_dados(self):
         return f"{self.__titular}, Número da conta: {self.__numero}, Saldo: R$ {self.__saldo:.2f}"
