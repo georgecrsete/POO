@@ -1,6 +1,48 @@
-
 import tkinter as tk
 from tkinter import messagebox, simpledialog
+
+
+class Cliente:
+    def __init__(self, nome, cpf):
+        self.__nome = nome
+        self.__cpf = cpf
+        self.__qtdcontas = []
+        #self.__endereco = endereco
+    
+    def get_nome(self):
+        return self.__nome
+    
+    def get_cpf(self):
+        return self.__cpf
+    
+    def get_endereco(self):
+        return self.__endereco
+
+    
+    def exibir_dados(self):
+        return f"Nome: {self.get_nome()}, CPF: {self.get_cpf()}, Endereço: {self.get_endereco()}"
+
+class Endereco:
+    def __init__(self, rua, numero, bairro, cidade):
+        self.__rua = rua
+        self.__numero = numero
+        self.__bairro = bairro
+        self.__cidade = cidade
+
+    def get_rua(self):
+        return self.__rua
+    
+    def get_numero(self):
+        return self.__numero
+    
+    def get_bairro(self):
+        return self.__bairro
+    
+    def get_cidade(self):
+        return self.__cidade
+    
+    def exibir_dados(self):
+        return f"Cidade:{self.get_cidade()}, Bairro:{self.get_bairro()}, Rua: {self.get_rua()}, Número: {self.get_numero()}"
 
 class ContaBancaria:
     numeros_contas = []
@@ -65,6 +107,7 @@ class BancoApp:
         self.janela = janela
         self.janela.title("Sistema Bancário - POO em Python")
         self.janela.geometry("850x400")
+
 
         self.contas = [
             ContaBancaria("João", 1001, 500),
