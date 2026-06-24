@@ -3,11 +3,14 @@ from tkinter import messagebox, simpledialog
 
 
 class Cliente:
-    def __init__(self, nome, cpf):
+    def __init__(self, nome, cpf, endereco):
         self.__nome = nome
         self.__cpf = cpf
-        self.__qtdcontas = []
-        #self.__endereco = endereco
+        self.__contas = []
+        self.__endereco = endereco
+
+    def adicionar_contas(self, conta):
+        self.__contas.append(conta)
     
     def get_nome(self):
         return self.__nome
@@ -47,20 +50,20 @@ class Endereco:
 class ContaBancaria:
     numeros_contas = []
 
-    def __init__(self, titular, numero, saldo):
-        self.__titular = titular
+    def __init__(self, cliente, numero, saldo):
+        self.__cliente = cliente
         self.__numero = numero
         self.__saldo = saldo
         ContaBancaria.numeros_contas.append(numero)
+
+    def get_titular(self):
+        return self.__cliente  
 
     def get_saldo(self):
         return self.__saldo
 
     def get_numero(self):
         return self.__numero
-
-    def get_titular(self):
-        return self.__titular
 
     def depositar(self, valor):
         if valor >= 0:
@@ -84,8 +87,15 @@ class ContaBancaria:
             return False
 
     def exibir_dados(self):
-        return f"{self.__titular}, Número da conta: {self.__numero}, Saldo: R$ {self.__saldo:.2f}"
-
+        c = self.__cliente
+        end = c.get_endereco()
+        return (
+        f"Nome: {c.get_nome()}\n"
+        f"CPF: {c.get_cpf()}\n"
+        f"{end.exibir_dados()}\n"
+        f"Número da conta: {self.__numero}\n"
+        f"Saldo: R$ {self.__saldo:.2f}"
+    )
     @classmethod
     def existe_conta_duplicada(cls):
         return len(cls.numeros_contas) != len(set(cls.numeros_contas))
@@ -110,11 +120,11 @@ class BancoApp:
 
 
         self.contas = [
-            ContaBancaria("João", 1001, 500),
-            ContaBancaria("Maria", 1002, 1000),
-            ContaBancaria("Pedro", 1003, 300),
-            ContaBancaria("Esther", 1004, 20)
-        ]
+            ContaBancaria(Cliente("João", "154.181.101-10", Endereco("Rua carrasco", 10, "cohab",    "Natal")),   1001, 500),
+            ContaBancaria(Cliente("Maria", "532.134.487-09", Endereco("Av. luis", 22, "centro",   "Natal")),   1002, 1000),
+            ContaBancaria(Cliente("Caio",  "910.533.984-98", Endereco("rua santa", 5,  "santa agueda", "Natal")),   1003, 300),
+            ContaBancaria(Cliente("Esther", "985.421.573-01", Endereco("Rua da palha", 8,  "Principal", "Natal")),   1004, 20),
+    ]
     
         if ContaBancaria.existe_conta_duplicada():
             messagebox.showerror("Erro", "Existe conta duplicada")
@@ -153,7 +163,7 @@ class BancoApp:
 
             lbl_titular = tk.Label(
                 frame,
-                text=conta.get_titular(),
+                text=conta.get_titular().get_nome(),
                 font=("Arial", 14, "bold")
             )
             lbl_titular.pack()
