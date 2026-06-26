@@ -25,6 +25,9 @@ class Cliente:
     def exibir_dados(self):
         return f"Nome: {self.get_nome()}, CPF: {self.get_cpf()}, Endereço: {self.get_endereco()}"
 
+    def adicionar_conta(self, conta):
+        self.__contas.append(conta)
+
 class Endereco:
     def __init__(self, rua, numero, bairro, cidade):
         self.__rua = rua
@@ -45,7 +48,8 @@ class Endereco:
         return self.__cidade
     
     def exibir_dados(self):
-        return f"Cidade:{self.get_cidade()}, Bairro:{self.get_bairro()}, Rua: {self.get_rua()}, Número: {self.get_numero()}"
+        return f"Cidade: {self.get_cidade()},\nBairro: {self.get_bairro()},\nRua: {self.get_rua()},\nNúmero: {self.get_numero()}"
+
 
 class ContaBancaria:
     numeros_contas = []
@@ -66,18 +70,20 @@ class ContaBancaria:
         return self.__numero
 
     def depositar(self, valor):
-        if valor >= 0:
-            self.__saldo += valor  
-            return True
-        else:
+        if valor < 0:
             return False
+        else:
+            self.__saldo += valor
+            return True
 
     def sacar(self, valor):
-        if self.__saldo >= valor and valor >= 0:  
+        if valor < 0:
+            return False
+        elif valor > self.__saldo:
+            return False
+        else:
             self.__saldo -= valor
             return True
-        else:
-            return False
 
     def transferir(self, valor, destino):
         if self.sacar(valor):
@@ -119,12 +125,17 @@ class BancoApp:
         self.janela.geometry("850x400")
 
 
+        cliente1 = Cliente("Leo", "676.676", Endereco("Santa Terezinha", "456", "Bom Jesus", "Ceará-Mirim") )
+        cliente2 = Cliente("Caio", "456.909", Endereco("Av. Brasil", "984", "Xique-xique", "São Gonçalo") )
+        cliente3 = Cliente("Sofócles", "123.456", Endereco("Avelino cruz", "67", "Baxa", "Pureza") )
+        cliente4 = Cliente("Dhimy", "900.865", Endereco("Palha", "001", "Cohab", "Brogodó") )
+
         self.contas = [
-            ContaBancaria(Cliente("João", "154.181.101-10", Endereco("Rua carrasco", 10, "cohab",    "Natal")),   1001, 500),
-            ContaBancaria(Cliente("Maria", "532.134.487-09", Endereco("Av. luis", 22, "centro",   "Natal")),   1002, 1000),
-            ContaBancaria(Cliente("Caio",  "910.533.984-98", Endereco("rua santa", 5,  "santa agueda", "Natal")),   1003, 300),
-            ContaBancaria(Cliente("Esther", "985.421.573-01", Endereco("Rua da palha", 8,  "Principal", "Natal")),   1004, 20),
-    ]
+            ContaBancaria(cliente1, 1001, 500),
+            ContaBancaria(cliente2, 1002, 1000),
+            ContaBancaria(cliente3, 1003, 300),
+            ContaBancaria(cliente4, 1004, 20),
+        ]
     
         if ContaBancaria.existe_conta_duplicada():
             messagebox.showerror("Erro", "Existe conta duplicada")
