@@ -23,7 +23,7 @@ class ContaCorrente(ContaBancaria):
         return (
             super().exibir_dados() +
             f"\nTipo: {self.get_tipo_conta()}"
-            f"\nlimite: {self.__limite}" +
+            f"\nlimite: {self.__limite}" 
             f"\ntarifa: {self.__tarifa_mensal}"
         )
     def get_tipo_conta(self):
@@ -45,7 +45,7 @@ class ContaPoupanca(ContaBancaria):
     def exibir_dados(self):
         return (
             super().exibir_dados() +
-            f"\nTipo: {self.get_tipo_conta()}" +
+            f"\nTipo: {self.get_tipo_conta()}" 
             f"\nTaxa de rendimento: {self.__taxa_rendimento}"
         )
 
@@ -238,7 +238,7 @@ class BancoApp:
     def render_juros(self, conta):
         if(conta.get_tipo_conta() == "Conta Poupança"):
             conta.render_juros()
-            messagebox.showerror("Sucesso", "Rendimento efetuado.")
+            messagebox.showinfo("Sucesso", "Rendimento efetuado.")
         else:
             messagebox.showerror("Erro", "Conta não disponibiliza rendimento")
 
@@ -247,7 +247,7 @@ class BancoApp:
     def cobrar_tarifa(self, conta):
         if(conta.get_tipo_conta() == "Conta Corrente"):
             conta.cobrar_tarifa()
-            messagebox.showerror("Sucesso", "Rendimento efetuado.")
+            messagebox.showinfo("Sucesso", "Rendimento efetuado.")
         else:
             messagebox.showerror("Erro", "Cobrança invalida para essa conta")
 
