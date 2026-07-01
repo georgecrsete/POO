@@ -5,14 +5,52 @@ from bancoapp import Cliente, ContaBancaria, Endereco
 
 class ContaCorrente(ContaBancaria):
     def __init__(self, cliente, numero, saldo, limite, tarifa_mensal):
-        super().__init__(self, cliente, numero, saldo)
+        super().__init__(cliente, numero, saldo)
         self.__limite = limite
         self.__tarifa_mensal = tarifa_mensal
 
-    def cobrar_tafira(self):
+    def cobrar_tarifa(self):
         super().sacar(self.__tarifa_mensal)
 
+    def sacar(self, valor):
+        saldo_total = self.get_saldo() + self.__limite
+
+        if valor <= saldo_total:
+            return super().sacar(valor)
+        return False
+
+    def exibir_dados(self):
+        return (
+            super().exibir_dados() +
+            f"\nTipo: {self.get_tipo_conta()}"
+            f"\nlimite: {self.__limite}" +
+            f"\ntarifa: {self.__tarifa_mensal}"
+        )
+    def get_tipo_conta(self):
+        return "Conta Corrente"
+
+class ContaPoupanca(ContaBancaria):
+    def __init__(self, cliente, numero, saldo, taxa_rendimento: float):
+        super().__init__(cliente, numero, saldo)
+        self.__taxa_rendimento = taxa_rendimento
+
+    def sacar(self, valor):
+        return super().sacar(valor)
+
+
+    def render_juros(self):
+        juros = self.get_saldo() * self.__taxa_rendimento
+        self.depositar(juros)
     
+    def exibir_dados(self):
+        return (
+            super().exibir_dados() +
+            f"\nTipo: {self.get_tipo_conta()}" +
+            f"\nTaxa de rendimento: {self.__taxa_rendimento}"
+        )
+
+    def get_tipo_conta(self):
+        return "Conta Poupança"
 
 
 
@@ -24,15 +62,15 @@ class BancoApp:
 
         cliente1 = Cliente("Leo", "676.676", Endereco("Santa Terezinha", "456", "Bom Jesus", "Ceará-Mirim") )
         cliente2 = Cliente("Caio", "456.909", Endereco("Av. Brasil", "984", "Xique-xique", "São Gonçalo") )
-        cliente3 = Cliente("Sofócles", "123.456", Endereco("Avelino cruz", "67", "Baxa", "Pureza") )
-        cliente4 = Cliente("Dhimy", "900.865", Endereco("Palha", "001", "Cohab", "Brogodó") )
+        # cliente3 = Cliente("Sofócles", "123.456", Endereco("Avelino cruz", "67", "Baxa", "Pureza") )
+        # cliente4 = Cliente("Dhimy", "900.865", Endereco("Palha", "001", "Cohab", "Brogodó") )
 
         self.contas = [
-            ContaBancaria(cliente1, 1001, 500),
-            ContaBancaria(cliente2, 1002, 1000),
-            ContaBancaria(cliente3, 1003, 300),
-            ContaBancaria(cliente4, 1004, 20)
-        ]
+            ContaCorrente(cliente1, 1001, 500, 300, 15),
+            ContaPoupanca(cliente2, 1002, 1000, 0.05),
+            # ContaBancaria(cliente3, 1003, 300),
+            # ContaBancaria(cliente4, 1004, 20)
+            ]
 
         # messagebox.showinfo("Sucesso", "Depósito realizado.")
 
@@ -127,16 +165,16 @@ class BancoApp:
                 width=15,
                 command=lambda c=conta: self.render_juros(c)
             )
-            btn_rendimento.config(state="disabled")
+            # btn_rendimento.config(state="disabled")
             btn_rendimento.pack(pady=2)
 
             btn_taxa = tk.Button(
                 frame,
                 text="Cobrar Taxa",
                 width=15,
-                command=lambda c=conta: self.cobrar_taxa(c)
+                command=lambda c=conta: self.cobrar_tarifa(c)
             )
-            btn_taxa.config(state="disabled")
+            # btn_taxa.config(state="disabled")
             btn_taxa.pack(pady=2)
 
     def depositar(self, conta):
@@ -204,9 +242,9 @@ class BancoApp:
         else:
             messagebox.showerror("Erro", "Conta não disponibiliza rendimento")
     
-    def cobrar_taxa(self, conta):
+    def cobrar_tarifa(self, conta):
         if(conta.get_tipo_conta() == "Conta Corrente"):
-            conta.cobrar_taxa()
+            conta.cobrar_tarifa()
             messagebox.showerror("Sucesso", "Rendimento efetuado.")
         else:
             messagebox.showerror("Erro", "Cobrança invalida para essa conta")
