@@ -10,15 +10,15 @@ class ContaCorrente(ContaBancaria):
         self.__tarifa_mensal = tarifa_mensal
 
     def cobrar_tarifa(self):
-        super().sacar(self.__tarifa_mensal)
+        self.sacar(self.__tarifa_mensal)
 
-    def sacar(self, valor):
-        saldo_total = self.get_saldo() + self.__limite
-
-        if valor <= saldo_total:
-            return super().sacar(valor)
+    def sacar(self, valor): #ajeitar depois
+        saldo_atual = getattr(self, "_ContaBancaria__saldo")
+        if  0 <  valor <= saldo_atual + self.__limite:
+            setattr(self, "_ContaBancaria__saldo", saldo_atual - valor)
+            return True
         return False
-
+    
     def exibir_dados(self):
         return (
             super().exibir_dados() +
@@ -241,7 +241,9 @@ class BancoApp:
             messagebox.showerror("Sucesso", "Rendimento efetuado.")
         else:
             messagebox.showerror("Erro", "Conta não disponibiliza rendimento")
-    
+
+        self.atualizar_tela()
+
     def cobrar_tarifa(self, conta):
         if(conta.get_tipo_conta() == "Conta Corrente"):
             conta.cobrar_tarifa()
@@ -249,7 +251,7 @@ class BancoApp:
         else:
             messagebox.showerror("Erro", "Cobrança invalida para essa conta")
 
-
+        self.atualizar_tela()
 
 janela = tk.Tk()
 app = BancoApp(janela)
